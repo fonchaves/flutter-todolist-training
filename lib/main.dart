@@ -17,6 +17,17 @@ class _HomeState extends State<Home> {
   final _todoController = TextEditingController();
   List _todoList = [];
 
+  @override
+  void initState() {
+    super.initState();
+
+    _readDataFromFile().then((data) {
+      setState(() {
+        _todoList = json.decode(data);
+      });
+    });
+  }
+
   void _addTodo() {
     setState(() {
       Map<String, dynamic> newTodo = Map();
@@ -24,6 +35,8 @@ class _HomeState extends State<Home> {
       _todoController.text = "";
       newTodo["ok"] = false;
       _todoList.add(newTodo);
+
+      _saveDataToFile();
     });
   }
 
@@ -67,6 +80,7 @@ class _HomeState extends State<Home> {
                     onChanged: (isPress) {
                       setState(() {
                         _todoList[index]["ok"] = isPress;
+                        _saveDataToFile();
                       });
                     },
                     title: Text(_todoList[index]),
